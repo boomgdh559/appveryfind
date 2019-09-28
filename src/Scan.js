@@ -5,14 +5,18 @@ import {
 } from 'react-native';
 import ResultsFound from './ResultsFound';
 import ResultsNotFound from './ResultsNotFound';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 import { RNCamera } from 'react-native-camera';
-import { BarCodeScanner, Permissions } from 'expo';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import * as Permissions from 'expo-permissions';
 import { web3, transcript } from './Connection';
 
 
-
 export default class Scan extends Component {
+  onSuccess(e) {
+    Linking.openURL(e.data).catch(err => console.error('An error occured', err));
+  }
+
   constructor() {
     super();
     this.state = {
@@ -35,11 +39,11 @@ export default class Scan extends Component {
     });
   };
 
+
   _handleBarCodeRead = result => {
     if (result.data !== this.state.lastScannedUrl) {
       LayoutAnimation.spring();
       this.setState({ lastScannedUrl: result.data });
-      this.isValidate(result.data);
     }
   };
 
@@ -82,25 +86,27 @@ export default class Scan extends Component {
                   block={true}
                   title="< Back"
                   style={styles.buttonStyles}
-
                 >
+
                 </Button>
                 <Text style={styles.topic}>Scan QR code</Text>
+                {/* <BarCodeScanner  onRead = {( e ) => alert ( e.data )}/> */}
                 {this.state.hasCameraPermission === null
                   ? <Text>Requesting for camera permission</Text>
                   : this.state.hasCameraPermission === false
-                    ? <Text style={{ color: 'red' }}>
+                    ? <Text style={{ color: '#fff' }}>
                       Camera permission is not granted
                 </Text>
                     : <BarCodeScanner
                       onBarCodeRead={this._handleBarCodeRead}
                       style={{
-                        height: 350,//Dimensions.get('window').height
+                        height: Dimensions.get('window').height,
                         width: Dimensions.get('window').width,
                       }}
                     />}
+
                 {this._maybeRenderUrl()}
-                <StatusBar hidden />
+
               </View>
             </SafeAreaView>
           </Modal>

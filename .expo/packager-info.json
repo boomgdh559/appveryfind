@@ -1,9 +1,9 @@
 {
-  "devToolsPort": 19005,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 41394,
+  "expoServerNgrokUrl": "https://w5-6x4.budpakdeewan.appveryfind.exp.direct",
+  "packagerNgrokUrl": "https://packager.w5-6x4.budpakdeewan.appveryfind.exp.direct",
+  "ngrokPid": 41414
 }
