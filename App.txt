@@ -1,0 +1,34 @@
+export default class App extends React.Component {
+  
+  
+  // state = {
+  //   //currentScreen: "ResultsFound"
+  //   currentScreen: "ScanQRcode"
+  // }
+  // switchScreen = (currentScreen)=> {
+  //   this.setState({currentScreen})
+  // }
+  // renderScreen = ()=>{
+    
+  //   if(this.state.currentScreen === "ScanQRcode"){
+  //     return(
+  //       <Scan switchScreen={this.switchScreen}/>
+  //     )
+  //   }
+  //   else if(this.state.currentScreen === "Scan"){
+  //     return(
+  //       <ScanQRcode/>
+  //     )
+  //   }
+  //}
+
+  render() {
+    
+    // return (
+    //   <View style={styles.container4}>
+    //    {this.renderScreen()}
+       
+    //   </View>
+      
+    // );
+  }
