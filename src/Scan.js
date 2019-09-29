@@ -14,9 +14,8 @@ import { web3, transcript } from './Connection';
 
 export default class Scan extends Component {
   onSuccess(e) {
-    Linking.openURL(e.data).catch(err => console.error('An error occured', err));
+    Linking.openURL(e.data).catch (err => console.error('An error occured', err));
   }
-
   constructor() {
     super();
     this.state = {
@@ -39,11 +38,11 @@ export default class Scan extends Component {
     });
   };
 
-
   _handleBarCodeRead = result => {
     if (result.data !== this.state.lastScannedUrl) {
       LayoutAnimation.spring();
       this.setState({ lastScannedUrl: result.data });
+      // this.isValidate(result.data);
     }
   };
 
@@ -86,27 +85,25 @@ export default class Scan extends Component {
                   block={true}
                   title="< Back"
                   style={styles.buttonStyles}
-                >
 
+                >
                 </Button>
-                <Text style={styles.topic}>Scan QR code</Text>
-                {/* <BarCodeScanner  onRead = {( e ) => alert ( e.data )}/> */}
+                <Text style={styles.topic}>Scan QR</Text>
                 {this.state.hasCameraPermission === null
                   ? <Text>Requesting for camera permission</Text>
                   : this.state.hasCameraPermission === false
-                    ? <Text style={{ color: '#fff' }}>
+                    ? <Text style={{ color: 'red' }}>
                       Camera permission is not granted
                 </Text>
                     : <BarCodeScanner
-                      onBarCodeRead={this._handleBarCodeRead}
+                      onBarCodeScanned={this._handleBarCodeRead}
                       style={{
-                        height: Dimensions.get('window').height,
+                        height: 350,//Dimensions.get('window').height
                         width: Dimensions.get('window').width,
                       }}
                     />}
-
                 {this._maybeRenderUrl()}
-
+                <StatusBar hidden />
               </View>
             </SafeAreaView>
           </Modal>
@@ -162,6 +159,7 @@ export default class Scan extends Component {
     Alert.alert(
       'Open this URL?',
       this.state.lastScannedUrl,
+    
       [
         {
           text: 'Yes',

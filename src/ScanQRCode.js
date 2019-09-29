@@ -126,52 +126,19 @@ const styles = StyleSheet.create({
 });
 
 export default class ScanQRCode extends Component {
-  state = {
-    hasCameraPermission: null,
-    lastScannedUrl: null,
-  };
-
+  constructor() {
+    super();
+    this.state = {
+      modalVisible: false,
+    }
+    state = {
+      hasCameraPermission: false,
+      lastScannedUrl: null,
+      type: RNCamera.Constants.Type.back,
+    };
+  }
   componentDidMount() {
     this._requestCameraPermission();
-  }
-
-  _requestCameraPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({
-      hasCameraPermission: status === 'granted',
-    });
-  };
-
-  _handleBarCodeRead = result => {
-    if (result.data !== this.state.lastScannedUrl) {
-      LayoutAnimation.spring();
-      this.setState({ lastScannedUrl: result.data });
-    }
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-
-        {this.state.hasCameraPermission === null
-          ? <Text>Requesting for camera permission</Text>
-          : this.state.hasCameraPermission === false
-              ? <Text style={{ color: '#fff' }}>
-                  Camera permission is not granted
-                </Text>
-              : <BarCodeScanner
-                  onBarCodeRead={this._handleBarCodeRead}
-                  style={{
-                    height: Dimensions.get('window').height,
-                    width: Dimensions.get('window').width,
-                  }}
-                />}
-
-        {this._maybeRenderUrl()}
-
-        <StatusBar hidden />
-      </View>
-    );
   }
 
   _handlePressUrl = () => {
@@ -183,7 +150,7 @@ export default class ScanQRCode extends Component {
           text: 'Yes',
           onPress: () => Linking.openURL(this.state.lastScannedUrl),
         },
-        { text: 'No', onPress: () => {} },
+        { text: 'No', onPress: () => { } },
       ],
       { cancellable: false }
     );
@@ -199,7 +166,7 @@ export default class ScanQRCode extends Component {
     }
 
     return (
-      <View style={styles.bottomBar}>
+      <View style={styles.bottomBar} >
         <TouchableOpacity style={styles.url} onPress={this._handlePressUrl}>
           <Text numberOfLines={1} style={styles.urlText}>
             {this.state.lastScannedUrl}
@@ -210,9 +177,99 @@ export default class ScanQRCode extends Component {
           onPress={this._handlePressCancel}>
           <Text style={styles.cancelButtonText}>
             Cancel
-          </Text>
+        </Text>
         </TouchableOpacity>
       </View>
     );
+
+  }
+
+  _requestCameraPermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({
+      hasCameraPermission: status === 'granted',
+    });
+  }
+  _handleBarCodeRead = result => {
+    if (result.data !== this.state.lastScannedUrl) {
+      LayoutAnimation.spring();
+      this.setState({ lastScannedUrl: result.data });
+    }
   };
+
+  render() {
+    return (
+      
+      // <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <ImageBackground source={require('../assets2/Background4.png')} style={styles.container} >
+        <SafeAreaView style={styles.header}>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+            }}>
+            <SafeAreaView style={{ marginTop: 22 }}>
+
+              <View>
+                <BarCodeScanner
+                  onBarCodeRead={this._handleBarCodeRead}
+                  style={{
+                    height: 350,//Dimensions.get('window').height
+                    width: Dimensions.get('window').width,
+                  }}
+                />
+                {this._maybeRenderUrl()}
+                <StatusBar hidden />
+              </View>
+            </SafeAreaView>
+          </Modal>
+        </SafeAreaView>
+        <LinearGradient
+          colors={['#9B6AFE', '#839FFA', '#6AD7F6']}
+          style={{ flex: 1 }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}>
+          <Image source={require('../assets2/menuLine.png')}
+            style={styles.MenuLineImage} >
+          </Image>
+          <Text style={styles.nameText}>Mattana Thanuwong</Text>
+          <Text style={styles.positionText}>HR | SIT Company</Text>
+          {/* <View style={styles.positionText}>
+              <Text>HR</Text>
+              <Text> | </Text>
+              <Text>SIT Company</Text>
+            </View> */}
+
+        </LinearGradient>
+
+
+        <View style={styles.QRofTranscriptBox}>
+          <Text style={styles.QrTranscriptText}>QR Code of Transcript</Text>
+          <Image source={require('../assets2/TranscriptExam.png')}
+            style={styles.TranscriptImage} >
+          </Image>
+
+          <View style={styles.buttonScanQR}>
+            <LinearGradient
+              colors={['#6AD7F6', '#839FFA', '#9B6AFE']}
+              style={{ flex: 1 }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Button onPress={() => { this.props.navigation.navigate("Scan") }}
+                title="Scan QR Code"
+                color='#FFFFFF'>
+              </Button>
+            </LinearGradient>
+
+          </View>
+
+        </View>
+      </ImageBackground>
+      // </View>
+
+    );
+  }
 }
