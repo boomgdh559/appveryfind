@@ -88,7 +88,7 @@ export default class Scan extends Component {
 
                 >
                 </Button>
-                <Text style={styles.topic}>Scan QR</Text>
+                <Text style={styles.topic}>Scan QR Code</Text>
                 {this.state.hasCameraPermission === null
                   ? <Text>Requesting for camera permission</Text>
                   : this.state.hasCameraPermission === false
