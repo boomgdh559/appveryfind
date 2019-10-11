@@ -10,11 +10,11 @@ import { RNCamera } from 'react-native-camera';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as Permissions from 'expo-permissions';
 import { web3, transcript } from './Connection';
-
+import axios from 'axios';
 
 export default class Scan extends Component {
   onSuccess(e) {
-    Linking.openURL(e.data).catch (err => console.error('An error occured', err));
+    Linking.openURL(e.data).catch(err => console.error('An error occured', err));
   }
   constructor() {
     super();
@@ -42,26 +42,45 @@ export default class Scan extends Component {
     if (result.data !== this.state.lastScannedUrl) {
       LayoutAnimation.spring();
       this.setState({ lastScannedUrl: result.data });
-      // this.isValidate(result.data);
+      this.isValidate(result.data);
     }
   };
 
-  isValidate = async (address) => {
-    await transcript.showTranscript(address.toString(), (error, result) => {
-      if (result[0] == 0) {
-        this.props.navigation.replace('ResultsNotFound');
-        //console.log("Error");
-      } else {
-        this.props.navigation.replace('ResultsFound', {
-          stdId: result[0],
-          stdName: result[1],
-          stdDegree: result[2],
-          stdDate: result[3],
-          stdGPA: result[4]
-        });
-        //console.log("Data : " + result[0]);
-      }
-    });
+  isValidate = (address) => {
+    // await transcript.showTranscript(address.toString(), (error, result) => {
+    //   if (result[0] == 0) {
+    //     this.props.navigation.replace('ResultsNotFound');
+    //     //console.log("Error");
+    //   } else {
+    //     this.props.navigation.replace('ResultsFound', {
+    //       stdId: result[0],
+    //       stdName: result[1],
+    //       stdDegree: result[2],
+    //       stdDate: result[3],
+    //       stdGPA: result[4]
+    //     });
+    //     //console.log("Data : " + result[0]);
+    //   }
+    // });
+    var sendAddress = { verifyAddress: address };
+    console.log("Send Address : ",sendAddress)
+    axios.post("http://veryfind.gq/api/verifyQRCode", sendAddress)
+      .then((response) => {
+        console.log("Response : ",response.data.fetchResult)
+        if (!response.data.fetchResult) {
+          this.props.navigation.replace('ResultsNotFound');
+        } else {
+          this.props.navigation.replace('ResultsFound', {
+            stdId: response.data.fetchResult[0],
+            stdName: response.data.fetchResult[1],
+            stdDegree: response.data.fetchResult[2],
+            stdDate: response.data.fetchResult[3],
+            stdGPA: response.data.fetchResult[4]
+          });
+          
+        }
+      })
+      .catch()
   }
 
   render() {
@@ -159,7 +178,7 @@ export default class Scan extends Component {
     Alert.alert(
       'Open this URL?',
       this.state.lastScannedUrl,
-    
+
       [
         {
           text: 'Yes',
