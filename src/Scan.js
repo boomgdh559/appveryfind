@@ -62,11 +62,12 @@ export default class Scan extends Component {
     //     //console.log("Data : " + result[0]);
     //   }
     // });
-    var sendAddress = { verifyAddress: address };
-    console.log("Send Address : ",sendAddress)
-    axios.post("http://veryfind.gq/api/verifyQRCode", sendAddress)
+    // var sendAddress = { verifyAddress: address };
+    // console.log("Send Address : ",sendAddress)
+    var AuthStr = "Bearer ".concat("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJ2ZjA0IiwiZmlyc3RuYW1lIjoiU2FrbmFyb25nIiwic3VybmFtZSI6IlBvbmd0aG9uZ2xhbmciLCJnZW5kZXIiOiJNYWxlIiwiZG9iIjoiMTk5Ny0wOS0xMlQwMDowMDowMC4wMDBaIiwidGVsIjoiMDEyLTAzNDU2NzgiLCJpYXQiOjE1NzIwODYyNjQsImV4cCI6MTU3MjEyMjI2NH0.YgNS-4zpwARLxgj9B3zlcUcZKGyouOW2aGiaJP8tzqY");
+    axios.get("http://35.240.145.109/api/mobile/verify/"+address,{ headers: { Authorization: AuthStr } })
       .then((response) => {
-        console.log("Response : ",response.data.fetchResult)
+        console.log("Response : ",response.data)
         if (!response.data.fetchResult) {
           this.props.navigation.replace('ResultsNotFound');
         } else {
@@ -80,7 +81,7 @@ export default class Scan extends Component {
           
         }
       })
-      .catch()
+      .catch((error)=>console.error(error));
   }
 
   render() {

@@ -1,9 +1,9 @@
 {
-  "devToolsPort": 19005,
+  "devToolsPort": 19002,
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerNgrokUrl": "https://w5-6x4.anonymous.appveryfine-2.exp.direct",
+  "packagerNgrokUrl": "https://packager.w5-6x4.anonymous.appveryfine-2.exp.direct",
+  "ngrokPid": 9545
 }
