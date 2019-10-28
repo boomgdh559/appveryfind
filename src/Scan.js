@@ -78,7 +78,6 @@ export default class Scan extends Component {
             stdDate: response.data.fetchResult[3],
             stdGPA: response.data.fetchResult[4]
           });
-          
         }
       })
       .catch((error)=>console.error(error));
