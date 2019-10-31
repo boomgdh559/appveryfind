@@ -8,6 +8,7 @@ import { HeaderBackButton } from "react-navigation-stack";
 
 export default class MoreInformation extends React.Component {
   render() {
+    const transcript = this.props.navigation.getParam('transcript', 'Not Found transcript');
     return (
       <View style={styles.background}>
         <ImageBackground
@@ -27,7 +28,7 @@ export default class MoreInformation extends React.Component {
               end={{ x: 1, y: 0 }}
             >
               <View style={styles.showTextName}>
-                <Text style={styles.textName}>Purich Sangprasert</Text>
+                <Text style={styles.textName}>{transcript.name}</Text>
               </View>
               <View style={styles.showTextName}>
                 <Text style={styles.textGPA}>GPA.</Text>

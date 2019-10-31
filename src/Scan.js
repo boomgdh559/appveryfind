@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet, Text, View, ImageBackground, Image, Button, Alert, Modal, Dimensions, SafeAreaView,
-  TouchableOpacity, LayoutAnimation, StatusBar, Linking
-} from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Image, Button, Alert, Modal, Dimensions, SafeAreaView, TouchableOpacity, LayoutAnimation, StatusBar, Linking } from 'react-native';
 import ResultsFound from './ResultsFound';
 import ResultsNotFound from './ResultsNotFound';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,7 +17,7 @@ export default class Scan extends Component {
     super();
     this.state = {
       modalVisible: false,
-    }
+    };
     state = {
       hasCameraPermission: false,
       lastScannedUrl: null,
@@ -29,7 +26,7 @@ export default class Scan extends Component {
   }
   componentDidMount() {
     this._requestCameraPermission();
-  };
+  }
 
   _requestCameraPermission = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -46,7 +43,7 @@ export default class Scan extends Component {
     }
   };
 
-  isValidate = (address) => {
+  isValidate = async address => {
     // await transcript.showTranscript(address.toString(), (error, result) => {
     //   if (result[0] == 0) {
     //     this.props.navigation.replace('ResultsNotFound');
@@ -64,78 +61,88 @@ export default class Scan extends Component {
     // });
     // var sendAddress = { verifyAddress: address };
     // console.log("Send Address : ",sendAddress)
-    var AuthStr = "Bearer ".concat("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJ2ZjA0IiwiZmlyc3RuYW1lIjoiU2FrbmFyb25nIiwic3VybmFtZSI6IlBvbmd0aG9uZ2xhbmciLCJnZW5kZXIiOiJNYWxlIiwiZG9iIjoiMTk5Ny0wOS0xMlQwMDowMDowMC4wMDBaIiwidGVsIjoiMDEyLTAzNDU2NzgiLCJpYXQiOjE1NzIwODYyNjQsImV4cCI6MTU3MjEyMjI2NH0.YgNS-4zpwARLxgj9B3zlcUcZKGyouOW2aGiaJP8tzqY");
-    axios.get("http://35.240.145.109/api/mobile/verify/"+address,{ headers: { Authorization: AuthStr } })
-      .then((response) => {
-        console.log("Response : ",response.data)
-        if (!response.data.fetchResult) {
+    var AuthStr = 'Bearer '.concat(
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJ2ZjA0IiwiZmlyc3RuYW1lIjoiU2FrbmFyb25nIiwic3VybmFtZSI6IlBvbmd0aG9uZ2xhbmciLCJnZW5kZXIiOiJNYWxlIiwiZG9iIjoiMTk5Ny0wOS0xMlQwMDowMDowMC4wMDBaIiwidGVsIjoiMDEyLTAzNDU2NzgiLCJpYXQiOjE1NzI1NDMzNTQsImV4cCI6MTU3MjU3OTM1NH0.veXPIJtgirmP7bDx3H6DjISUljDplKA7gMu29CcOd7Q',
+    );
+    // axios.get("http://35.240.145.109/api/mobile/verify/"+address,{ headers: { Authorization: AuthStr } })
+
+    try {
+      const response = await axios.get('http://35.240.145.109/api/mobile/verify/0x5fee6f277b7f3efe2861336b89828d272284a292c1bf5aa4efa22ee0c901b2c5', { headers: { Authorization: AuthStr } });
+      const verifyResult = response.data.verifyResult;
+      const error = response.data.error;
+      console.log('Response : ', response.data);
+      console.log('response.data.error', response.data.error);
+      if (Object.entries(error).length !== 0 && error.constructor === Object) {
+        throw response.data.error;
+      }
+      // console.log('verifyResult', verifyResult);
+      this.props.navigation.replace('ResultsFound', {
+        stdId: verifyResult.studentID,
+        stdName: verifyResult.name,
+        stdDegree: verifyResult.degreeConferred,
+        stdDate: verifyResult.dateOfValidSeal,
+        stdGPA: verifyResult.totalGradGPA,
+        transcript: verifyResult,
+      });
+    } catch (error) {
+      // console.error(error);
+      switch (error.status) {
+        default:
           this.props.navigation.replace('ResultsNotFound');
-        } else {
-          this.props.navigation.replace('ResultsFound', {
-            stdId: response.data.fetchResult[0],
-            stdName: response.data.fetchResult[1],
-            stdDegree: response.data.fetchResult[2],
-            stdDate: response.data.fetchResult[3],
-            stdGPA: response.data.fetchResult[4]
-          });
-          
-        }
-      })
-      .catch((error)=>console.error(error));
-  }
+          break;
+      }
+    }
+  };
 
   render() {
     return (
       //<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <ImageBackground source={require('../assets2/Background4.png')} style={styles.container} >
+      <ImageBackground source={require('../assets2/Background4.png')} style={styles.container}>
         <SafeAreaView style={styles.header}>
-
           <Modal
             animationType="slide"
             transparent={false}
             visible={this.state.modalVisible}
             onRequestClose={() => {
               Alert.alert('Modal has been closed.');
-            }}>
+            }}
+          >
             <SafeAreaView style={{ marginTop: 22 }}>
-
               <View>
-                <Button bordered onPress={() => { this.setState({ modalVisible: true }) }}
-                  onPress={() => { this.props.navigation.navigate('ScanQRCode') }}
+                <Button
+                  bordered
+                  onPress={() => {
+                    this.setState({ modalVisible: true });
+                  }}
+                  onPress={() => {
+                    this.props.navigation.navigate('ScanQRCode');
+                  }}
                   block={true}
                   title="< Back"
                   style={styles.buttonStyles}
-
-                >
-                </Button>
+                ></Button>
                 <Text style={styles.topic}>Scan QR Code</Text>
-                {this.state.hasCameraPermission === null
-                  ? <Text>Requesting for camera permission</Text>
-                  : this.state.hasCameraPermission === false
-                    ? <Text style={{ color: 'red' }}>
-                      Camera permission is not granted
-                </Text>
-                    : <BarCodeScanner
-                      onBarCodeScanned={this._handleBarCodeRead}
-                      style={{
-                        height: 350,//Dimensions.get('window').height
-                        width: Dimensions.get('window').width,
-                      }}
-                    />}
+                {this.state.hasCameraPermission === null ? (
+                  <Text>Requesting for camera permission</Text>
+                ) : this.state.hasCameraPermission === false ? (
+                  <Text style={{ color: 'red' }}>Camera permission is not granted</Text>
+                ) : (
+                  <BarCodeScanner
+                    onBarCodeScanned={this._handleBarCodeRead}
+                    style={{
+                      height: 350, //Dimensions.get('window').height
+                      width: Dimensions.get('window').width,
+                    }}
+                  />
+                )}
                 {this._maybeRenderUrl()}
                 <StatusBar hidden />
               </View>
             </SafeAreaView>
           </Modal>
 
-          <LinearGradient
-            colors={['#9B6AFE', '#839FFA', '#6AD7F6']}
-            style={{ flex: 1 }}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}>
-            <Image source={require('../assets2/menuLine.png')}
-              style={styles.MenuLineImage} >
-            </Image>
+          <LinearGradient colors={['#9B6AFE', '#839FFA', '#6AD7F6']} style={{ flex: 1 }} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+            <Image source={require('../assets2/menuLine.png')} style={styles.MenuLineImage}></Image>
             <Text style={styles.nameText}>Mattana Thanuwong</Text>
             <Text style={styles.positionText}>HR | SIT Company</Text>
             {/* <View style={styles.positionText}>
@@ -143,35 +150,33 @@ export default class Scan extends Component {
               <Text> | </Text>
               <Text>SIT Company</Text>
             </View> */}
-
           </LinearGradient>
-        </SafeAreaView >
+        </SafeAreaView>
 
         <View style={styles.QRofTranscriptBox}>
           <Text style={styles.QrTranscriptText}>QR Code of Transcript</Text>
-          <Image source={require('../assets2/TranscriptExam.png')}
-            style={styles.TranscriptImage} >
-          </Image>
-
+          <Image source={require('../assets2/TranscriptExam.png')} style={styles.TranscriptImage}></Image>
+          <Button
+            onPress={() => {
+              this.isValidate('dddd');
+            }}
+            title="SCAN ME"
+            color="#000"
+          ></Button>
           <View style={styles.buttonScanQR}>
-            <LinearGradient
-              colors={['#6AD7F6', '#839FFA', '#9B6AFE']}
-              style={{ flex: 1 }}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            >
-              <Button onPress={() => { this.setState({ modalVisible: true }) }}
+            <LinearGradient colors={['#6AD7F6', '#839FFA', '#9B6AFE']} style={{ flex: 1 }} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+              <Button
+                onPress={() => {
+                  this.setState({ modalVisible: true });
+                }}
                 title="Scan QR Code"
-                color='#FFFFFF'>
-              </Button>
+                color="#FFFFFF"
+              ></Button>
             </LinearGradient>
-
           </View>
-
         </View>
       </ImageBackground>
       //</View>
-
     );
   }
 
@@ -185,9 +190,9 @@ export default class Scan extends Component {
           text: 'Yes',
           onPress: () => Linking.openURL(this.state.lastScannedUrl),
         },
-        { text: 'No', onPress: () => { } },
+        { text: 'No', onPress: () => {} },
       ],
-      { cancellable: false }
+      { cancellable: false },
     );
   };
 
@@ -207,22 +212,13 @@ export default class Scan extends Component {
             {this.state.lastScannedUrl}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={this._handlePressCancel}>
-          <Text style={styles.cancelButtonText}>
-            Cancel
-        </Text>
+        <TouchableOpacity style={styles.cancelButton} onPress={this._handlePressCancel}>
+          <Text style={styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     );
   };
 }
-
-
-
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -240,7 +236,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     shadowRadius: 100,
     borderRadius: 9,
-
   },
   nameText: {
     fontSize: 14,
@@ -256,10 +251,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     height: 20,
     left: 250,
-    top: 15
+    top: 15,
     // flexDirection: 'column',
     // alignContent: 'center'
-
   },
   MenuLineImage: {
     height: 32,
@@ -268,7 +262,6 @@ const styles = StyleSheet.create({
     top: 30,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   QRofTranscriptBox: {
     position: 'absolute',
@@ -281,7 +274,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     shadowColor: 'black',
-    shadowOffset: { width: 0, height: 3, },
+    shadowOffset: { width: 0, height: 3 },
   },
 
   QrTranscriptText: {
@@ -312,13 +305,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.09,
     shadowRadius: 1,
     shadowColor: 'black',
-    shadowOffset: { width: 0, height: 3, },
+    shadowOffset: { width: 0, height: 3 },
     //borderRadius: 30
   },
   topic: {
     fontWeight: 'bold',
     fontSize: 18,
-
   },
   buttonStyles: {
     borderRadius: 30,
@@ -334,8 +326,5 @@ const styles = StyleSheet.create({
     top: 100,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
-
-
 });
