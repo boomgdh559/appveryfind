@@ -10,9 +10,11 @@ import MoreInformation from './src/MoreInformation';
 import Welcome from './src/Welcome';
 import ScanQRCode from './src/ScanQRCode';
 import Scan from './src/Scan';
+import Login from './src/Login'
 import './shim';
 
 const RootPage = createStackNavigator({
+  Login: Login,
   ScanQRCode: ScanQRCode,
   Scan: Scan,
   ResultsFound: ResultsFound,
