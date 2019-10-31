@@ -14,10 +14,11 @@ import './shim'
 
 const RootPage = createStackNavigator (
   {
-  ScanQRCode : ScanQRCode,
-  Scan : Scan,
-  ResultsFound : ResultsFound,
-  ResultsNotFound : ResultsNotFound
+  // ScanQRCode : ScanQRCode,
+  // Scan : Scan,
+  // ResultsFound : ResultsFound,
+  // ResultsNotFound : ResultsNotFound
+  MoreInformation : {screen: MoreInformation}
   }
 );
 
