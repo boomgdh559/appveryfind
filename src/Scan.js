@@ -43,7 +43,7 @@ export default class Scan extends Component {
     }
   };
 
-  isValidate = async address => {
+  isValidate = async (address) => {
     // await transcript.showTranscript(address.toString(), (error, result) => {
     //   if (result[0] == 0) {
     //     this.props.navigation.replace('ResultsNotFound');
@@ -62,16 +62,17 @@ export default class Scan extends Component {
     // var sendAddress = { verifyAddress: address };
     // console.log("Send Address : ",sendAddress)
     var AuthStr = 'Bearer '.concat(
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJ2ZjA0IiwiZmlyc3RuYW1lIjoiU2FrbmFyb25nIiwic3VybmFtZSI6IlBvbmd0aG9uZ2xhbmciLCJnZW5kZXIiOiJNYWxlIiwiZG9iIjoiMTk5Ny0wOS0xMlQwMDowMDowMC4wMDBaIiwidGVsIjoiMDEyLTAzNDU2NzgiLCJpYXQiOjE1NzI1NDMzNTQsImV4cCI6MTU3MjU3OTM1NH0.veXPIJtgirmP7bDx3H6DjISUljDplKA7gMu29CcOd7Q',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJ2ZjA0IiwiZmlyc3RuYW1lIjoiU2FrbmFyb25nIiwic3VybmFtZSI6IlBvbmd0aG9uZ2xhbmciLCJnZW5kZXIiOiJNYWxlIiwiZG9iIjoiMTk5Ny0wOS0xMlQwMDowMDowMC4wMDBaIiwidGVsIjoiMDEyLTAzNDU2NzgiLCJpYXQiOjE1NzI1OTMwMzksImV4cCI6MTU3MjYyOTAzOX0.vEla-9xjoU78oQcdMTuETpdfdcpd2g9-jqswBe9Z8qk',
     );
     // axios.get("http://35.240.145.109/api/mobile/verify/"+address,{ headers: { Authorization: AuthStr } })
 
     try {
-      const response = await axios.get('http://35.240.145.109/api/mobile/verify/0x5fee6f277b7f3efe2861336b89828d272284a292c1bf5aa4efa22ee0c901b2c5', { headers: { Authorization: AuthStr } });
+      const response = await axios.get('http://35.240.145.109/api/mobile/verify/'+address, { headers: { Authorization: AuthStr } });
       const verifyResult = response.data.verifyResult;
       const error = response.data.error;
       console.log('Response : ', response.data);
       console.log('response.data.error', response.data.error);
+
       if (Object.entries(error).length !== 0 && error.constructor === Object) {
         throw response.data.error;
       }
@@ -80,7 +81,7 @@ export default class Scan extends Component {
         stdId: verifyResult.studentID,
         stdName: verifyResult.name,
         stdDegree: verifyResult.degreeConferred,
-        stdDate: verifyResult.dateOfValidSeal,
+        stdDate: verifyResult.dateOfGraduation,
         stdGPA: verifyResult.totalGradGPA,
         transcript: verifyResult,
       });

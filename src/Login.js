@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AsyncStorage } from 'react-native';
+import axios from "axios";
 
 export default class Login extends Component {
     state = {
@@ -18,21 +19,31 @@ export default class Login extends Component {
                 email: this.state.email,
                 password: this.state.password
             }
-            fetch('http://35.240.145.109/api/user/web/login', {
-                method: "POST",
+            console.log("Email : ",this.state.email,"\nPassword : ",password);
+            var config = {
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify(obj)
-            })
-                .then(res => res.json())
-                .then(async json => {
+                body : obj
+            }
+            axios.post("http://35.240.145.109/api/user/mobile/login",config)
+            .then((response)=>console.log("Response : ",response.data));
 
-                    await AsyncStorage.setItem('token', json.authenData.token);
-                    //var a = await AsyncStorage.getItem('token') เรียก token มาใช้งานด้วยวิธีนี้
-                    //console.log(a)
-                })
+            // fetch('http://35.240.145.109/api/user/mobile/login', {
+            //     method: "POST",
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/x-www-form-urlencoded',
+            //     },
+            //     body: JSON.stringify(obj)
+            // })
+            //     .then(res => console.log("Response : ",res.data.authenData.authenStatus))
+            //     .then(async json => {
+
+            //         await AsyncStorage.setItem('token', json.authenData.token);
+            //         //var a = await AsyncStorage.getItem('token') เรียก token มาใช้งานด้วยวิธีนี้
+            //         //console.log(a)
+            //     })
         } else {
             alert("กรอกข้อมูลก่อนนะคะ")
         }
@@ -72,7 +83,7 @@ export default class Login extends Component {
                             end={{ x: 1, y: 0 }}
                         >
                             <Button onPress={() => this.SignIn()}
-                                title="SING IN"
+                                title="SIGN IN"
                                 color='#FFFFFF'>
                             </Button>
                         </LinearGradient>

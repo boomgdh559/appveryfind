@@ -14,7 +14,7 @@ import Login from './src/Login'
 import './shim';
 
 const RootPage = createStackNavigator({
-  Login: Login,
+  // Login: Login,
   ScanQRCode: ScanQRCode,
   Scan: Scan,
   ResultsFound: ResultsFound,
